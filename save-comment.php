@@ -13,8 +13,12 @@
  * 
  * Et enfin on pourra rediriger l'utilisateur vers l'article en question
  */
-require_once('libraries/database.php');
 require_once('libraries/utils.php');
+require_once('libraries/models/Article.php');
+require_once('libraries/models/Comment.php');
+
+$articleModel = new Article();
+$commentModel = new Comment();
 /**
  * 1. On vérifie que les données ont bien été envoyées en POST
  * D'abord, on récupère les informations à partir du POST
@@ -45,14 +49,14 @@ if (!$author || !$article_id || !$content) {
     die("Votre formulaire a été mal rempli !");
 }
 
-$article = findArticle($article_id);
+$article = $articleModel->find($article_id);
 // Si rien n'est revenu, on fait une erreur
 if (!$article) {
     die("Ho ! L'article $article_id n'existe pas boloss !");
 }
 
 // 3. Insertion du commentaire
-insertComment($author, $content, $article_id);
+$commentModel->insert($author, $content, $article_id);
 
 // 4. Redirection vers l'article en question :
 redirect("article.php?id=" . $article_id);
