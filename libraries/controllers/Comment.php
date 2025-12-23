@@ -3,9 +3,6 @@
 namespace Controllers;
 
 require_once('libraries/utils.php');
-require_once('libraries/controllers/Controller.php');
-require_once('libraries/models/Article.php');
-require_once('libraries/models/Comment.php');
 
 class Comment extends Controller
 {
