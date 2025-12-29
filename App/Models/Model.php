@@ -1,17 +1,18 @@
 <?php
 
-namespace Models;
+namespace App\Models;
 
-use Database;
+use PDO;
+use App\Core\Database;
 
 abstract class Model
 {
-    protected $pdo;
-    protected $table;
+    protected PDO $pdo;
+    protected string $table;
 
     public function __construct()
     {
-        $this->pdo = \Database::getPdo();
+        $this->pdo = Database::getPdo();
     }
 
     /**
@@ -23,11 +24,10 @@ abstract class Model
     {
         $sql = "SELECT * FROM {$this->table}";
         if ($order) {
-            $sql .= " ORDER BY " . $order;
+            $sql .= " ORDER BY $order";
         }
-        $resultats = $this->pdo->query($sql);
-        $articles = $resultats->fetchAll();
-        return $articles;
+        
+        return $this->pdo->query($sql)->fetchAll();
     }
 
     /**
@@ -36,12 +36,12 @@ abstract class Model
      * @param integer $id
      * @return void
      */
-    public function find(int $id)
+    public function find(int $id): array|false
     {
         $query = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE id = :id");
         $query->execute(['id' => $id]);
-        $item = $query->fetch();
-        return $item;
+
+        return $query->fetch();
     }
 
     /**

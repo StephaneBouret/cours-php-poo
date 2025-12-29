@@ -1,22 +1,23 @@
 <?php
 
-class Renderer
+namespace App\Core;
+
+use InvalidArgumentException;
+
+final class Renderer
 {
     public static function render(string $path, array $variables = []): void
     {
-        $root = dirname(__DIR__); // remonte de /libraries vers /cours-php-poo
+        // Racine projet : on remonte de /App/Core vers la racine
+        $root = dirname(__DIR__, 2);
 
         $templateFile = $root . '/templates/' . $path . '.html.php';
         $layoutFile   = $root . '/templates/layout.html.php';
 
         foreach ($variables as $key => $_) {
             if (!is_string($key) || !preg_match('/^[a-zA-Z_]\w*$/', $key)) {
-                throw new InvalidArgumentException("Clé invalide pour une variable: " . print_r($key, true));
+                throw new InvalidArgumentException("Nom de variable invalide : " . print_r($key, true));
             }
-        }
-
-        if (!is_file($templateFile)) {
-            throw new RuntimeException("Template introuvable: $templateFile");
         }
 
         $pageContent = (function (string $__file, array $__vars) {
@@ -26,7 +27,7 @@ class Renderer
             return ob_get_clean();
         })($templateFile, $variables);
 
-        // rendre dispo $pageTitle dans le layout
+        // rendre dispo les variables du template dans le layout (ex. $pageTitle)
         extract($variables, EXTR_SKIP);
 
         require $layoutFile;

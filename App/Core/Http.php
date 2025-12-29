@@ -1,6 +1,8 @@
 <?php
 
-class Http
+namespace App\Core;
+
+final class Http
 {
     public static function redirect(string $url): void
     {
